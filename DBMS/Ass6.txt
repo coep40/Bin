@@ -1,0 +1,54 @@
+Ass6
+
+-- Create the Student table
+CREATE TABLE Student (
+    rollnumber INT PRIMARY KEY,
+    name VARCHAR(255),
+    sub1 INT,
+    sub2 INT,
+    sub3 INT,
+    total INT
+);
+
+-- Insert some sample data
+INSERT INTO Student (rollnumber, name, sub1, sub2, sub3) VALUES
+(1, 'Alice', 80, 75, 90),
+(2, 'Bob', 85, 90, 80),
+(3, 'Charlie', 70, 85, 75);
+
+-- Create the stored procedure to calculate total marks
+DELIMITER $$
+
+CREATE PROCEDURE CalculateTotalMarks()
+BEGIN
+    DECLARE done INT DEFAULT 0;
+    DECLARE roll INT;
+    DECLARE name VARCHAR(255);
+    DECLARE sub1 INT;
+    DECLARE sub2 INT;
+    DECLARE sub3 INT;
+    DECLARE total INT;
+    
+    DECLARE cur CURSOR FOR SELECT rollnumber, name, sub1, sub2, sub3 FROM Student;
+    DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = 1;
+
+    OPEN cur;
+    read_loop: LOOP
+        FETCH cur INTO roll, name, sub1, sub2, sub3;
+        IF done THEN
+            LEAVE read_loop;
+        END IF;
+        
+        SET total = sub1 + sub2 + sub3;
+        
+        -- You can print or do whatever you want with the total here
+        -- For demonstration purpose, I'm just printing it
+        SELECT CONCAT('Total marks for student ', name, ' (Roll No. ', roll, '): ', total) AS result;
+    END LOOP;
+    CLOSE cur;
+END$$
+
+DELIMITER ;
+
+-- Call the stored procedure to calculate total marks
+CALL CalculateTotalMarks();

@@ -1,0 +1,76 @@
+Ass8
+
+
+-- Create Student table
+CREATE TABLE Student (
+    rollnumber NUMBER PRIMARY KEY,
+    name VARCHAR2(100),
+    sub1 NUMBER,
+    sub2 NUMBER,
+    sub3 NUMBER,
+    total NUMBER,
+    Percent NUMBER,
+    Grade VARCHAR2(2)
+);
+
+-- Insert sample data
+INSERT INTO Student (rollnumber, name, sub1, sub2, sub3)
+VALUES (1, 'Jay', 85, 75, 90);
+
+INSERT INTO Student (rollnumber, name, sub1, sub2, sub3)
+VALUES (2, 'Parth', 70, 80, 75);
+
+INSERT INTO Student (rollnumber, name, sub1, sub2, sub3)
+VALUES (3, 'Ram', 95, 85, 88);
+
+-- Create procedure to update student marks
+CREATE OR REPLACE PROCEDURE update_student_marks
+IS
+    CURSOR student_cursor IS
+        SELECT rollnumber, sub1, sub2, sub3
+        FROM Student;
+
+    v_rollnumber  Student.rollnumber%TYPE;
+    v_sub1        Student.sub1%TYPE;
+    v_sub2        Student.sub2%TYPE;
+    v_sub3        Student.sub3%TYPE;
+    v_total       Student.total%TYPE;
+    v_percent     Student.Percent%TYPE;
+    v_grade       Student.Grade%TYPE;
+BEGIN
+    FOR student_rec IN student_cursor LOOP
+        -- Calculate total marks
+        v_total := student_rec.sub1 + student_rec.sub2 + student_rec.sub3;
+
+        -- Calculate percentage
+        v_percent := (v_total / 300) * 100;
+
+        -- Determine grade
+        IF v_percent >= 90 THEN
+            v_grade := 'A';
+        ELSIF v_percent >= 80 THEN
+            v_grade := 'B';
+        ELSIF v_percent >= 70 THEN
+            v_grade := 'C';
+        ELSIF v_percent >= 60 THEN
+            v_grade := 'D';
+        ELSE
+            v_grade := 'F';
+        END IF;
+
+        -- Update student record
+        UPDATE Student
+        SET total = v_total,
+            Percent = v_percent,
+            Grade = v_grade
+        WHERE rollnumber = student_rec.rollnumber;
+    END LOOP;
+    COMMIT; -- Committing the transaction
+END;
+/
+
+-- Execute the procedure to update student marks
+EXECUTE update_student_marks;
+
+-- Check updated data
+SELECT * FROM Student;

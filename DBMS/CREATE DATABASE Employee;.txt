@@ -1,0 +1,127 @@
+CREATE DATABASE Employee;
+
+use Employee;
+
+CREATE TABLE employee (
+    emp_name VARCHAR(100) PRIMARY KEY,
+    street VARCHAR(255),
+    city VARCHAR(100)
+);
+
+
+CREATE TABLE company (
+    company_name VARCHAR(100) PRIMARY KEY,
+    city VARCHAR(100)
+);
+
+
+CREATE TABLE works (
+    emp_name VARCHAR(100),
+    company_name VARCHAR(100),
+    salary DECIMAL(10, 2),
+    PRIMARY KEY (emp_name, company_name),
+    FOREIGN KEY (emp_name) REFERENCES employee(emp_name),
+    FOREIGN KEY (company_name) REFERENCES company(company_name)
+);
+
+CREATE TABLE manager (
+    emp_name VARCHAR(100) PRIMARY KEY,
+    manager_name VARCHAR(100),
+    FOREIGN KEY (emp_name) REFERENCES employee(emp_name)
+);
+
+
+INSERT INTO employee (emp_name, street, city) VALUES
+('Jay', 'Katraj', 'Pune'),
+('Parth', 'Vadgaon', 'Pune'),
+('Ram','Camp','Nashik'),
+('Adi','Thane','Raver');
+
+INSERT INTO company (company_name, city) VALUES
+('ABC Ltd', 'Pune'),
+('XYZ Corp', 'Nashik'),
+('Central Bank',  'Raver');
+
+INSERT INTO works (emp_name, company_name, salary) VALUES
+('Jay', 'ABC Ltd', 15000),
+('Parth', 'XYZ Corp', 20000),
+('Ram', 'Central Bank', 18000),
+('Adi', 'ABC Ltd', 12000);
+
+INSERT INTO manager (emp_name, manager_name) VALUES
+('Jay', 'Ram'),
+('Adi', 'Parth');
+
+
+
+
+SELECT e.emp_name, e.street, e.city
+FROM employee e
+INNER JOIN works w ON e.emp_name = w.emp_name
+WHERE w.company_name = 'ABC Ltd' AND w.salary BETWEEN 10000 AND 20000;
+
+
+
+SELECT e.emp_name, e.street, e.city
+FROM employee e
+INNER JOIN works w ON e.emp_name = w.emp_name
+INNER JOIN company c ON w.company_name = c.company_name
+WHERE e.city = c.city;
+
+
+SELECT e.emp_name
+FROM employee e
+INNER JOIN works w ON e.emp_name = w.emp_name
+WHERE w.salary > (
+  SELECT MIN(salary)
+  FROM works
+  WHERE company_name = 'Central Bank'
+);
+
+
+SELECT company_name
+FROM works
+GROUP BY company_name
+ORDER BY COUNT(*) DESC
+LIMIT 1;
+
+
+SELECT company_name
+FROM works
+GROUP BY company_name
+ORDER BY SUM(salary) ASC
+LIMIT 1;
+
+SELECT c.company_name
+FROM company c
+INNER JOIN works w ON c.company_name = w.company_name
+GROUP BY c.company_name
+HAVING AVG(w.salary) > (
+  SELECT AVG(salary)
+  FROM works
+  WHERE company_name = 'Central Bank'
+);
+
+
+SELECT e.emp_name
+FROM employee e
+INNER JOIN manager m ON e.emp_name = m.emp_name
+INNER JOIN employee m_e ON m.manager_name = m_e.emp_name
+WHERE e.city = m_e.city AND e.street = m_e.street;
+
+SELECT emp_name
+FROM employee
+WHERE emp_name NOT IN (
+    SELECT emp_name
+    FROM works
+    WHERE company_name = 'ABC Ltd'
+);
+
+
+SELECT emp_name, street, city
+FROM employee
+WHERE city LIKE 'P%';
+
+SELECT emp_name, street, city
+FROM employee
+WHERE city LIKE '%R';

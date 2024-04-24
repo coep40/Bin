@@ -1,0 +1,85 @@
+Ass10
+
+-- Create Books table
+CREATE TABLE Books (
+    book_id INT PRIMARY KEY,
+    title VARCHAR(255),
+    author VARCHAR(255),
+    genre VARCHAR(50),
+    copies INT
+);
+
+-- Create Members table
+CREATE TABLE Members (
+    member_id INT PRIMARY KEY,
+    name VARCHAR(100),
+    address VARCHAR(255),
+    phone VARCHAR(20)
+);
+
+-- Create Transactions table
+CREATE TABLE Transactions (
+    transaction_id INT PRIMARY KEY,
+    book_id INT,
+    member_id INT,
+    transaction_date DATE,
+    due_date DATE,
+    returned_date DATE,
+    FOREIGN KEY (book_id) REFERENCES Books(book_id),
+    FOREIGN KEY (member_id) REFERENCES Members(member_id)
+);
+
+-- Insert data into Books table
+INSERT INTO Books (book_id, title, author, genre, copies) VALUES
+(1, 'To Kill a Mockingbird', 'Harper Lee', 'Fiction', 5),
+(2, '1984', 'George Orwell', 'Dystopian', 3),
+(3, 'The Great Gatsby', 'F. Scott Fitzgerald', 'Classic', 4);
+
+-- Insert data into Members table
+INSERT INTO Members (member_id, name, address, phone) VALUES
+(1, 'John Doe', '123 Main St, Anytown', '123-456-7890'),
+(2, 'Jane Smith', '456 Elm St, Othertown', '987-654-3210'),
+(3, 'Alice Johnson', '789 Oak St, Thistown', '555-123-4567');
+
+-- Insert data into Transactions table
+INSERT INTO Transactions (transaction_id, book_id, member_id, transaction_date, due_date, returned_date) VALUES
+(1, 1, 1, '2024-04-01', '2024-04-15', '2024-04-14'),
+(2, 2, 2, '2024-04-03', '2024-04-17', NULL),
+(3, 3, 3, '2024-04-05', '2024-04-19', NULL);
+
+-- Query all books
+SELECT * FROM Books;
+
+-- Query all members
+SELECT * FROM Members;
+
+-- Query all transactions
+SELECT * FROM Transactions;
+
+-- Query books borrowed by a specific member
+SELECT Books.title, Books.author, Transactions.transaction_date, Transactions.due_date, Transactions.returned_date
+FROM Books
+JOIN Transactions ON Books.book_id = Transactions.book_id
+WHERE Transactions.member_id = 1;
+
+-- Update the number of copies of a book
+UPDATE Books
+SET copies = copies - 1
+WHERE book_id = 1;
+
+-- Mark a transaction as returned
+UPDATE Transactions
+SET returned_date = '2024-04-16'
+WHERE transaction_id = 2;
+
+-- Query available copies of a book
+SELECT title, copies
+FROM Books
+WHERE book_id = 1;
+
+-- Query books borrowed but not yet returned
+SELECT Books.title, Members.name, Transactions.transaction_date, Transactions.due_date
+FROM Books
+JOIN Transactions ON Books.book_id = Transactions.book_id
+JOIN Members ON Members.member_id = Transactions.member_id
+WHERE Transactions.returned_date IS NULL;

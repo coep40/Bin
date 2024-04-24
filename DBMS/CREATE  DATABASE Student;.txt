@@ -1,0 +1,78 @@
+CREATE  DATABASE Student;
+ 
+use Student;
+
+CREATE TABLE Student (
+    Student_ID INT PRIMARY KEY,
+    Name VARCHAR(100),
+    Address VARCHAR(255),
+    Phone VARCHAR(20)
+);
+
+
+CREATE TABLE Course (
+    Course_ID INT PRIMARY KEY,
+    Name VARCHAR(100),
+    Instructor VARCHAR(100),
+    Schedule VARCHAR(100),
+    Credits INT
+);
+
+
+CREATE TABLE Registration (
+    Registration_ID INT PRIMARY KEY,
+    Student_ID INT,
+    Course_ID INT,
+    Registration_Date DATE,
+    FOREIGN KEY (Student_ID) REFERENCES Student(Student_ID),
+    FOREIGN KEY (Course_ID) REFERENCES Course(Course_ID)
+);
+
+
+-- Insert sample data into Student table
+INSERT INTO Student (Student_ID, Name, Address, Phone)
+VALUES 
+    (1, 'Jay', 'Katraj', '9172554032'),
+    (2, 'Parth', 'Vadgaon', '9405308272');
+
+-- Insert sample data into Course table
+INSERT INTO Course (Course_ID, Name, Instructor, Schedule, Credits)
+VALUES 
+    (101, 'Mathematics', 'Prof.A.B.Patil', '9-10AM', 3),
+    (102, 'History', 'Prof.R.A.Kadam', '1-2:30PM', 4);
+
+-- Insert sample data into Registration table
+INSERT INTO Registration (Registration_ID, Student_ID, Course_ID, Registration_Date)
+VALUES 
+    (1, 1, 101, '2024-04-25'),
+    (2, 1, 102, '2024-04-25'),
+    (3, 2, 102, '2024-04-25');
+
+SELECT s.Name AS Student_Name, c.Name AS Course_Name
+FROM Student s
+JOIN Registration r ON s.Student_ID = r.Student_ID
+JOIN Course c ON r.Course_ID = c.Course_ID;
+
+
+SELECT c.Name AS Course_Name, COUNT(r.Student_ID) AS Enrolled_Students
+FROM Course c
+LEFT JOIN Registration r ON c.Course_ID = r.Course_ID
+GROUP BY c.Name;
+
+
+SELECT s.Name AS Student_Name, s.Address, s.Phone, c.Name AS Course_Name, c.Instructor, c.Schedule
+FROM Student s
+JOIN Registration r ON s.Student_ID = r.Student_ID
+JOIN Course c ON r.Course_ID = c.Course_ID
+WHERE s.Student_ID = 1;
+ -- Replace 1 with the desired Student_ID
+
+SELECT c.Name AS Course_Name, c.Instructor, c.Schedule, s.Name AS Student_Name
+FROM Course c
+JOIN Registration r ON c.Course_ID = r.Course_ID
+JOIN Student s ON r.Student_ID = s.Student_ID
+WHERE c.Course_ID = 102;
+ -- Replace 102 with the desired Course_ID
+
+
+

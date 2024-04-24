@@ -1,0 +1,71 @@
+Ass9
+
+
+CREATE TABLE employee (
+    emp_name VARCHAR(50),
+    street VARCHAR(100),
+    city VARCHAR(50)
+);
+
+CREATE TABLE works (
+    emp_name VARCHAR(50),
+    company_name VARCHAR(50),
+    salary DECIMAL(10, 2)
+);
+
+CREATE TABLE company (
+    company_name VARCHAR(50),
+    city VARCHAR(50)
+);
+
+CREATE TABLE manager (
+    emp_name VARCHAR(50),
+    manager_name VARCHAR(50)
+);
+
+
+-- Sample data for employee table
+INSERT INTO employee VALUES
+('John Doe', '123 Main St', 'New York'),
+('Jane Smith', '456 Elm St', 'Los Angeles');
+
+-- Sample data for works table
+INSERT INTO works VALUES
+('John Doe', 'ABC Company', 50000),
+('Jane Smith', 'XYZ Corporation', 60000);
+
+-- Sample data for company table
+INSERT INTO company VALUES
+('ABC Company', 'New York'),
+('XYZ Corporation', 'Los Angeles');
+
+-- Sample data for manager table
+INSERT INTO manager VALUES
+('John Doe', 'Alice Johnson');
+
+
+CREATE VIEW employee_details AS
+SELECT e.emp_name, e.street, e.city, w.company_name, w.salary, c.city AS company_city, m.manager_name
+FROM employee e
+JOIN works w ON e.emp_name = w.emp_name
+JOIN company c ON w.company_name = c.company_name
+LEFT JOIN manager m ON e.emp_name = m.emp_name;
+
+
+-- Attempting to update the base table through the view
+UPDATE employee_details
+SET city = 'Chicago'
+WHERE emp_name = 'John Doe';
+
+
+CREATE VIEW employee_info AS
+SELECT emp_name, street, city
+FROM employee;
+
+
+-- Attempting to update the base table through the simplified view
+UPDATE employee_info
+SET city = 'Chicago'
+WHERE emp_name = 'John Doe';
+
+

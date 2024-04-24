@@ -1,0 +1,65 @@
+Ass5
+
+-- Create the product_price_history table
+CREATE TABLE product_price_history (
+    history_id NUMBER GENERATED ALWAYS AS IDENTITY,
+    product_id NUMBER(5),
+    product_name VARCHAR2(32),
+    supplier_name VARCHAR2(32),
+    unit_price NUMBER(7,2),
+    change_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Create the product table
+CREATE TABLE product (
+    product_id NUMBER(5),
+    product_name VARCHAR2(32),
+    supplier_name VARCHAR2(32),
+    unit_price NUMBER(7,2)
+);
+
+-- Create a sequence for product_id
+CREATE SEQUENCE product_seq START WITH 1 INCREMENT BY 1;
+
+-- Create a row-level trigger to update product_price_history
+CREATE OR REPLACE TRIGGER product_price_update
+AFTER UPDATE OF unit_price ON product
+FOR EACH ROW
+BEGIN
+    INSERT INTO product_price_history (product_id, product_name, supplier_name, unit_price)
+    VALUES (:OLD.product_id, :OLD.product_name, :OLD.supplier_name, :OLD.unit_price);
+END;
+/
+
+-- Create a statement-level trigger to update product_price_history
+CREATE OR REPLACE TRIGGER product_price_update_statement
+AFTER UPDATE OF unit_price ON product
+DECLARE
+    CURSOR price_changes IS
+        SELECT product_id, product_name, supplier_name, unit_price
+        FROM product;
+BEGIN
+    FOR price_rec IN price_changes LOOP
+        INSERT INTO product_price_history (product_id, product_name, supplier_name, unit_price)
+        VALUES (price_rec.product_id, price_rec.product_name, price_rec.supplier_name, price_rec.unit_price);
+    END LOOP;
+END;
+/
+
+-- Insert some sample data into the product table
+INSERT INTO product (product_id, product_name, supplier_name, unit_price)
+VALUES (product_seq.NEXTVAL, 'Product A', 'Supplier X', 10.00);
+
+INSERT INTO product (product_id, product_name, supplier_name, unit_price)
+VALUES (product_seq.NEXTVAL, 'Product B', 'Supplier Y', 15.00);
+
+-- Update the price of Product A
+UPDATE product
+SET unit_price = 12.50
+WHERE product_name = 'Product A';
+
+-- Query to see the contents of the product table
+SELECT * FROM product;
+
+-- Query to see the contents of the product_price_history table
+SELECT * FROM product_price_history;

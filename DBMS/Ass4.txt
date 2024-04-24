@@ -1,0 +1,37 @@
+Ass4
+
+-- Create Employee table
+CREATE TABLE Employee (
+    ID INT,
+    NAME VARCHAR(255),
+    AGE INT,
+    ADDRESS VARCHAR(255),
+    SALARY DECIMAL(10, 2)
+);
+
+-- Insert sample data into Employee table
+INSERT INTO Employee (ID, NAME, AGE, ADDRESS, SALARY) VALUES
+(1, 'Jay', 25, 'Pune', 50000.00),
+(2, 'Parth', 30, 'Satara', 60000.00),
+(3, 'Ram', 28, 'Nashik', 55000.00),
+(4, 'Adi', 26, 'Mumbai', 52000.00),
+(5, 'Sid', 35, 'Raver', 70000.00);
+
+-- Create Employee_BKP table
+CREATE TABLE Employee_BKP AS
+SELECT * FROM Employee;
+
+-- Update SALARY by 0.25 times for Employees whose AGE is greater than or equal to 27
+UPDATE Employee
+SET SALARY = SALARY * 0.25
+WHERE AGE >= 27;
+
+-- Delete records from Employee table for Employees whose AGE is greater than or equal to 27
+DELETE FROM Employee
+WHERE AGE >= 27;
+
+-- Select all records from Employee table
+SELECT * FROM Employee;
+
+-- Select all records from Employee_BKP table
+SELECT * FROM Employee_BKP;

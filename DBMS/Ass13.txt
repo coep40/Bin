@@ -1,0 +1,69 @@
+Ass13
+
+ traveling
+
+
+-- Create Passenger table
+CREATE TABLE Passenger (
+    PassengerID INT PRIMARY KEY,
+    Name VARCHAR(50),
+    Age INT,
+    Gender VARCHAR(10)
+);
+
+-- Create Train table
+CREATE TABLE Train (
+    TrainID INT PRIMARY KEY,
+    TrainName VARCHAR(50),
+    Route VARCHAR(100)
+);
+
+-- Create Reservation table
+CREATE TABLE Reservation (
+    ReservationID INT PRIMARY KEY,
+    PassengerID INT,
+    TrainID INT,
+    SeatNumber VARCHAR(10),
+    ReservationDate DATE,
+    Status VARCHAR(20),
+    FOREIGN KEY (PassengerID) REFERENCES Passenger(PassengerID),
+    FOREIGN KEY (TrainID) REFERENCES Train(TrainID)
+);
+
+-- Insert sample data into Passenger table
+INSERT INTO Passenger (PassengerID, Name, Age, Gender)
+VALUES (1, 'John Doe', 35, 'Male'),
+       (2, 'Jane Smith', 28, 'Female'),
+       (3, 'Michael Johnson', 45, 'Male');
+
+-- Insert sample data into Train table
+INSERT INTO Train (TrainID, TrainName, Route)
+VALUES (101, 'Express 101', 'City A to City B'),
+       (102, 'Fast Train 102', 'City B to City C'),
+       (103, 'Super Express 103', 'City C to City D');
+
+-- Insert sample data into Reservation table
+INSERT INTO Reservation (ReservationID, PassengerID, TrainID, SeatNumber, ReservationDate, Status)
+VALUES (1, 1, 101, 'A12', '2024-04-25', 'Confirmed'),
+       (2, 2, 102, 'B34', '2024-04-26', 'Confirmed'),
+       (3, 3, 103, 'C56', '2024-04-27', 'Confirmed');
+
+-- Update a reservation status
+UPDATE Reservation
+SET Status = 'Cancelled'
+WHERE ReservationID = 1;
+
+-- Select all passengers
+SELECT * FROM Passenger;
+
+-- Select all trains
+SELECT * FROM Train;
+
+-- Select all reservations
+SELECT * FROM Reservation;
+
+-- Select reservations along with passenger and train details
+SELECT r.ReservationID, p.Name AS PassengerName, t.TrainName, r.SeatNumber, r.ReservationDate, r.Status
+FROM Reservation r
+JOIN Passenger p ON r.PassengerID = p.PassengerID
+JOIN Train t ON r.TrainID = t.TrainID;

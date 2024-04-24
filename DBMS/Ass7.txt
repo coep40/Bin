@@ -1,0 +1,37 @@
+Ass7
+
+CREATE TABLE Student (
+    rollnumber INT PRIMARY KEY,
+    name VARCHAR(50),
+    sub1 INT,
+    sub2 INT,
+    sub3 INT
+);
+
+
+INSERT INTO Student (rollnumber, name, sub1, sub2, sub3) VALUES
+(1, 'Jay', 85, 90, 88),
+(2, 'Parth', 78, 92, 85),
+(3, 'Ram', 90, 87, 82),
+(4, 'Sid', 82, 84, 79);
+
+
+
+CREATE FUNCTION CalculateTotalMarks(@rollnumber INT)
+RETURNS INT
+AS
+BEGIN
+    DECLARE @totalMarks INT;
+
+    SELECT @totalMarks = COALESCE(sub1, 0) + COALESCE(sub2, 0) + COALESCE(sub3, 0)
+    FROM Student
+    WHERE rollnumber = @rollnumber;
+
+    RETURN @totalMarks;
+END;
+
+
+SELECT dbo.CalculateTotalMarks(1) AS TotalMarksForJohn;
+
+
+SELECT * FROM Student;

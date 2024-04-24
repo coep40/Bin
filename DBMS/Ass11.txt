@@ -1,0 +1,71 @@
+Ass11
+
+
+-- Create Users table
+CREATE TABLE Users (
+    UserID INT PRIMARY KEY AUTO_INCREMENT,
+    Name VARCHAR(100),
+    Email VARCHAR(100),
+    Password VARCHAR(100)
+);
+
+-- Create Movies table
+CREATE TABLE Movies (
+    MovieID INT PRIMARY KEY AUTO_INCREMENT,
+    Title VARCHAR(100),
+    Genre VARCHAR(50),
+    ReleaseDate DATE,
+    Director VARCHAR(100)
+);
+
+-- Create Bookings table
+CREATE TABLE Bookings (
+    BookingID INT PRIMARY KEY AUTO_INCREMENT,
+    UserID INT,
+    MovieID INT,
+    BookingDate DATE,
+    NumTickets INT,
+    FOREIGN KEY (UserID) REFERENCES Users(UserID),
+    FOREIGN KEY (MovieID) REFERENCES Movies(MovieID)
+);
+
+
+-- Insert sample records into Users table
+INSERT INTO Users (Name, Email, Password) VALUES
+('John Doe', 'john@example.com', 'password123'),
+('Jane Smith', 'jane@example.com', 'password456'),
+('Alice Johnson', 'alice@example.com', 'password789');
+
+-- Insert sample records into Movies table
+INSERT INTO Movies (Title, Genre, ReleaseDate, Director) VALUES
+('The Shawshank Redemption', 'Drama', '1994-09-22', 'Frank Darabont'),
+('Inception', 'Sci-Fi', '2010-07-16', 'Christopher Nolan'),
+('The Godfather', 'Crime', '1972-03-24', 'Francis Ford Coppola');
+
+-- Insert sample records into Bookings table
+INSERT INTO Bookings (UserID, MovieID, BookingDate, NumTickets) VALUES
+(1, 1, '2024-04-25', 2),
+(2, 2, '2024-04-26', 3),
+(3, 3, '2024-04-27', 1);
+
+
+SELECT * FROM Users;
+
+
+SELECT * FROM Movies;
+
+
+SELECT * FROM Bookings;
+
+SELECT B.BookingID, U.Name AS UserName, M.Title AS MovieTitle, B.BookingDate, B.NumTickets
+FROM Bookings B
+JOIN Users U ON B.UserID = U.UserID
+JOIN Movies M ON B.MovieID = M.MovieID;
+
+SELECT M.Title AS MovieTitle, COUNT(B.MovieID) AS TotalBookings
+FROM Movies M
+LEFT JOIN Bookings B ON M.MovieID = B.MovieID
+GROUP BY M.Title;
+
+
+

@@ -1,0 +1,42 @@
+Create  database Product;
+
+use  Product;
+
+-- Assuming we have a table called "Product" with columns order_id, product_name, and order_date
+CREATE TABLE Product (
+    order_id INT PRIMARY KEY,
+    product_name VARCHAR(255),
+    order_date DATE 
+);
+
+-- Inserting sample data
+INSERT INTO Product (order_id, product_name, order_date) VALUES
+(1, 'Apple', ());  -- Assuming today's date as the order date
+
+-- 1. Display current date, current time, and timestamp:
+SELECT CURDATE() AS current_date,
+       CURTIME() AS current_time,
+       NOW() AS current_timestamp;
+
+
+-- 2. Display date for orderid = 1:
+SELECT order_date FROM Product WHERE order_id = 1;
+
+-- 3. Extract year, month, and day for orderid = 1:
+SELECT YEAR(order_date) AS order_year,
+       MONTH(order_date) AS order_month,
+       DAY(order_date) AS order_day
+FROM Product WHERE order_id = 1;
+
+-- 4. Execute date_add, date_sub, datediff(), and date_format functions:
+-- Adding 3 days to order date
+SELECT DATE_ADD(order_date, INTERVAL 3 DAY) AS order_date_after_3_days FROM Product WHERE order_id = 1;
+
+-- Subtracting 1 month from order date
+SELECT DATE_SUB(order_date, INTERVAL 1 MONTH) AS order_date_minus_1_month FROM Product WHERE order_id = 1;
+
+-- Calculating difference between current date and order date
+SELECT DATEDIFF(CURDATE(), order_date) AS days_since_order FROM Product WHERE order_id = 1;
+
+-- Formatting order date as 'YYYY-MM-DD'
+SELECT DATE_FORMAT(order_date, '%Y-%m-%d') AS formatted_order_date FROM Product WHERE order_id = 1;
